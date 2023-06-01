@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace Pokemone
 {
+
     internal class Program
     {
+
+        static Random rnd = new Random();
+
         static void Main(string[] args)
         {
-
-
             
 
 
@@ -19,8 +22,6 @@ namespace Pokemone
             Console.WriteLine("Do you want to play ? ( yes / no ) ");
 
             string answer = Console.ReadLine();
-
-
 
 
             if (answer == "yes" || answer == "Yes")
@@ -46,42 +47,18 @@ namespace Pokemone
                     Trainer trainer2 = new Trainer(trainer2Name);
                     trainer2.addtoBelt();
 
-                    int x = 0;
+                     
 
-                    for (int i = 0; i < 6 ; i++)
-                    {
+                     
 
-                        int beltindex;
+                    Battle battle = new Battle();
 
-                        if(i <  3 )
-                        {
-                            beltindex = i;
-                        }
-
-                        else
-                        {
-                            
-                            beltindex = x;
-                            x++;
-
-
-                        }
+                    Console.WriteLine(battle.whoWin(trainer1.throwPokeball(), trainer2.throwPokeball()));
 
 
 
-                        Console.WriteLine(trainer1.name + " turn : ");
-                        trainer1.throwPokeball(beltindex);
 
-                        Console.WriteLine(trainer2.name + " turn : ");
-                        trainer2.throwPokeball(beltindex);
 
-                        Console.WriteLine(trainer1.name + "  : ");
-                        trainer1.returnPokeball();
-
-                        Console.WriteLine(trainer2.name + "   : ");
-                        trainer2.returnPokeball();
-
-                    }
 
                     Console.WriteLine("Do you want to rstart ? : ( yse/no ) ");
                     string quitAnswer = Console.ReadLine();
@@ -99,28 +76,114 @@ namespace Pokemone
         class Pokeball
         {
             public bool isEmpety;
+            private string pokemoneType; 
             public Charmander charmander;
+            public Squirtle squirtle;
+            public Bulbasaur bulbasaur;
 
 
-            public Pokeball(bool isEmpety, string name, string strength, string weakness)
+
+            public Pokeball(bool isEmpety, string name, string strength, string weakness , string pokemone)
             {
                 this.isEmpety = isEmpety;
 
                 if (this.isEmpety == true)
                 {
-                    this.charmander = new Charmander(name, strength, weakness);
+
+
+                    switch (pokemone)
+                    {
+
+                        case "charmendar":
+
+                            this.charmander = new Charmander(name, strength, weakness);
+                            this.pokemoneType = "charmendar";
+                            break;
+
+                        case "squirtle":
+
+                            this.squirtle = new Squirtle(name, strength, weakness);
+                            this.pokemoneType = "squirtle";
+                            break;
+
+                        case "bulbasaur":
+
+                            this.bulbasaur = new Bulbasaur(name, strength, weakness);
+                            this.pokemoneType = "bulbasaur";
+                            break;
+
+                    } 
+                    
 
                 }
             }
 
             public void releasCharmander()
             {
-                this.charmander.battleCry();
+
+                switch (this.pokemoneType)
+                {
+                    case "charmendar":
+
+                        this.charmander.battleCry();
+                        break;
+
+                    case "squirtle":
+
+                        this.squirtle.battleCry();
+                        break;
+
+                    case "bulbasaur":
+
+                        this.bulbasaur.battleCry();
+                        break;
+
+                }
+                
             }
 
             public void closePokeball()
             {
-                Console.WriteLine( this.charmander.name + "  is back his Pokeball !");
+                
+
+                switch (this.pokemoneType)
+                {
+                    case "charmendar":
+
+                        Console.WriteLine(this.charmander.name + "  is back his Pokeball !");
+                        break;
+
+                    case "squirtle":
+
+                        Console.WriteLine(this.squirtle.name + "  is back his Pokeball !");
+                        break;
+
+                    case "bulbasaur":
+
+                        Console.WriteLine(this.bulbasaur.name + "  is back his Pokeball !");
+                        break;
+
+                }
+            }
+
+            public Pokemone returnPokemoneObject()
+            {
+
+                if (this.pokemoneType == "charmendar")
+                {
+                    return this.charmander;
+                }
+
+                else if (this.pokemoneType == "squirtle")
+                {
+                    return this.squirtle;
+                }
+
+                else 
+                {
+                    return this.bulbasaur;
+                }
+                
             }
         }
 
@@ -128,11 +191,11 @@ namespace Pokemone
         {
 
             public string name;
-            public int pokeBallnum;
+            public int score;
+            public int pokemoneIndex;
             public Pokeball pokeball;
-            List<Pokeball> belt1 = new List<Pokeball>();
-            List<Pokeball> belt2 = new List<Pokeball>();
-
+            List<Pokeball> belt = new List<Pokeball>();
+ 
 
 
             public Trainer(string name)
@@ -142,51 +205,39 @@ namespace Pokemone
                 this.addtoBelt();
             }
 
-            public void num()
-            {
-                Console.WriteLine(belt1.Count);
-                Console.WriteLine(belt2.Count);
-            }
+            
             public void addtoBelt()
             {
 
-                for (int i = 0; i <= 3; i++)
+                for (int i = 0; i <= 2; i++)
                 {
-                    pokeball = new Pokeball(true, "charmendar", "fire", "water ");
-                    belt1.Add(pokeball);
-                    belt2.Add(pokeball);
+                    pokeball = new Pokeball(true, "charmendar", "fire", "water " , "charmendar");
+                    belt.Add(pokeball);
+                  
 
-                    pokeball = new Pokeball(true, "Squirtle", "water", "leaf");
-                    belt1.Add(pokeball);
-                    belt2.Add(pokeball);
+                    pokeball = new Pokeball(true, "Squirtle", "water", "grass", "squirtle"  );
+                    belt.Add(pokeball);
+                    
 
-                    pokeball = new Pokeball(true, "Bulbasaur", "grass", "fire");
-                    belt1.Add(pokeball);
-                    belt2.Add(pokeball);
+                    pokeball = new Pokeball(true, "Bulbasaur", "grass", "fire" , "bulbasaur");
+                    belt.Add(pokeball);
+                    
 
                 }
-
-             
+       
 
 
             }
 
 
-            public void throwPokeball(int pokeBallnum)
+            public Pokemone throwPokeball()
             {
 
-                this.pokeBallnum = pokeBallnum;
+                this.pokemoneIndex = rnd.Next(this.belt.Count);
+                belt[this.pokemoneIndex].releasCharmander();
 
-                if(this.pokeBallnum  < 3)
-                {
-                    belt1[pokeBallnum].releasCharmander();
 
-                }
-                else
-                {
-                    belt2[pokeBallnum].releasCharmander();
-                }
-
+                return belt[this.pokemoneIndex].returnPokemoneObject();
 
 
 
@@ -195,9 +246,7 @@ namespace Pokemone
 
             public void returnPokeball()
             {
-                belt1[pokeBallnum].closePokeball();
-
-
+                belt[this.pokemoneIndex].closePokeball();
 
             }
         }
@@ -237,6 +286,7 @@ namespace Pokemone
 
         }
 
+
         class Bulbasaur : Pokemone
         {
 
@@ -254,6 +304,7 @@ namespace Pokemone
 
         }
 
+
         class Charmander : Pokemone
         {
 
@@ -262,14 +313,62 @@ namespace Pokemone
 
             }
 
-
-
             public override void battleCry()
             {
                 Console.WriteLine(this.name + "!!!");
             }
         }
 
+
+        class Battle
+        {
+
+
+            private string pokemone1;
+
+            public string round(string pokemone1, string pokemone2)
+            {
+                
+
+                return "s";
+            }
+            public int whoWin(Pokemone pokemone1, Pokemone pokemone2)
+            {
+
+
+                if (pokemone1.strnegth == pokemone2.weakness)
+                {
+
+                    return 1;
+                    
+                }
+
+                else if(pokemone2.strnegth == pokemone1.weakness)
+                {
+                    return 2;
+                }
+
+                return 0;
+
+            }
+
+             
+        }
+
+
+        class Arena
+        {
+            public Trainer trainer1;
+            public Trainer trainer2;
+            public int round;
+
+
+            public Arena(string trainer1, string trainer2)
+            {
+                this.trainer1.name = trainer1;
+                this.trainer2.name = trainer2;
+            }
+        }
     }
 }
 
